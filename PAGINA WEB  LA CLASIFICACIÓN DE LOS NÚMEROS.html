@@ -1,0 +1,681 @@
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Clase Interactivo: Clasificación de Números</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #3D3D3D;
+        }
+        .nav-button.active {
+            background-color: #FFC107;
+            color: #3D3D3D;
+            font-weight: 600;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .interactive-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .interactive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals with Amber Accent -->
+    <!-- Application Structure Plan: The application is structured as a single-page exploratory guide. It uses a top navigation bar to switch between different "learning stations" or thematic sections (Introduction, Concepts, Activities, Evaluation). This structure was chosen because it mirrors a logical learning progression: start with the 'why' (introduction), learn the 'what' (concepts), practice the 'how' (activities), and finally, check understanding (evaluation). This non-linear but guided approach allows students to revisit sections as needed, promoting self-paced learning and exploration. The classification of numbers has been updated to Naturales, Enteros, Racionales, Irracionales y Reales, which represents a more advanced mathematical scope than a typical 4th-grade curriculum. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Learning Objectives -> Goal: Inform -> Viz/Presentation: Interactive Cards -> Interaction: Hover for emphasis -> Justification: Breaks down objectives into digestible, visually appealing chunks.
+        - Report Info: Key Concepts (e.g., Natural Numbers, Integers, Rationals, Irrationals, Reals) -> Goal: Organize & Inform -> Viz/Presentation: Tabbed content with simple text and icons (HTML/CSS) -> Interaction: Click to reveal concept details -> Justification: Organizes a large amount of information cleanly, preventing overwhelm. Users can focus on one concept at a time. This reflects the updated classification.
+        - Report Info: Interactive Activities -> Goal: Engage & Practice -> Viz/Presentation: Interactive mini-games (HTML/CSS/JS) for each number classification, plus an LLM-powered example generator -> Justification: Provides hands-on practice for each number set and adds a dynamic, AI-powered tool for personalized example generation, reinforcing understanding.
+        - Report Info: Evaluation Rubric -> Goal: Inform & Assess -> Viz/Presentation: Interactive Quiz (HTML/JS) and Interactive Chart (Chart.js Radar Chart) -> Interaction: User answers questions, gets immediate feedback, and sees a summary chart -> Justification: Provides a direct, engaging way for students to self-assess their understanding, complemented by a visual summary.
+        - Library/Method: Chart.js for the radar chart. All other visuals are built with Tailwind CSS and simple JS for interactivity, avoiding complex libraries to maintain performance and simplicity. Gemini API is used for text generation.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body>
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-amber-500">Mundo de los Números</h1>
+            <p class="text-lg text-gray-600 mt-2">Una aventura interactiva para entender la clasificación numérica</p>
+        </header>
+
+        <nav class="flex justify-center bg-amber-100 rounded-full p-2 mb-12 shadow-md">
+            <button class="nav-button active px-6 py-2 rounded-full" onclick="showSection('introduccion')">Introducción</button>
+            <button class="nav-button px-6 py-2 rounded-full" onclick="showSection('conceptos')">Conceptos Clave</button>
+            <button class="nav-button px-6 py-2 rounded-full" onclick="showSection('actividades')">Actividades</button>
+            <button class="nav-button px-6 py-2 rounded-full" onclick="showSection('evaluacion')">Evaluación</button>
+        </nav>
+
+        <main>
+            <section id="introduccion" class="content-section active">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold text-center text-amber-600 mb-6">¡Bienvenidos, exploradores de números!</h2>
+                    <p class="text-gray-700 mb-4 text-center max-w-3xl mx-auto">
+                        En esta unidad, nos embarcaremos en un viaje para descubrir los secretos que esconden los números. No se trata solo de contar, sino de entender cómo se organizan, cómo se relacionan y cómo los usamos todos los días. Aprender a clasificar los números es como aprender el mapa de un tesoro: nos ayuda a encontrar soluciones, a entender el mundo y a prepararnos para desafíos matemáticos más grandes. ¡Prepárense para jugar, explorar y convertirse en verdaderos expertos en números!
+                    </p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                        <div class="interactive-card bg-amber-50 p-6 rounded-xl border border-amber-200">
+                            <h3 class="font-bold text-lg text-amber-800 mb-2">🎯 Nuestros Objetivos</h3>
+                            <p class="text-sm text-gray-600">Comprenderemos la jerarquía de los conjuntos numéricos: Naturales, Enteros, Racionales, Irracionales y Reales.</p>
+                        </div>
+                        <div class="interactive-card bg-green-50 p-6 rounded-xl border border-green-200">
+                            <h3 class="font-bold text-lg text-green-800 mb-2">🌍 ¿Por qué es importante?</h3>
+                            <p class="text-sm text-gray-600">Clasificar números nos ayuda a resolver problemas complejos y a entender mejor el mundo de las matemáticas y la ciencia.</p>
+                        </div>
+                        <div class="interactive-card bg-blue-50 p-6 rounded-xl border border-blue-200">
+                            <h3 class="font-bold text-lg text-blue-800 mb-2">🎮 Aprendizaje Activo</h3>
+                            <p class="text-sm text-gray-600">¡Aquí no hay lugar para el aburrimiento! Aprenderemos a través de la exploración y actividades prácticas. ¡Tú eres el protagonista!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="conceptos" class="content-section">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold text-center text-amber-600 mb-6">Explorando los Tipos de Números</h2>
+                     <p class="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                        El universo de los números es vasto y variado. Cada tipo de número tiene sus propias características y usos. En esta sección, puedes hacer clic en cada categoría para descubrir sus secretos. Explora cómo se relacionan los diferentes conjuntos numéricos y qué números pertenecen a cada grupo.
+                    </p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="interactive-card bg-sky-50 p-6 rounded-xl border border-sky-200 cursor-pointer flex items-center space-x-4" onclick="showConceptDetail('naturales')">
+                            <div class="w-16 h-16 bg-sky-200 rounded-full flex items-center justify-center text-3xl">🔢</div>
+                            <div>
+                                <h3 class="font-bold text-xl text-sky-800">Números Naturales (ℕ)</h3>
+                                <p class="text-sm mt-2">Los que usamos para contar: 1, 2, 3...</p>
+                            </div>
+                        </div>
+                        <div class="interactive-card bg-rose-50 p-6 rounded-xl border border-rose-200 cursor-pointer flex items-center space-x-4" onclick="showConceptDetail('enteros')">
+                            <div class="w-16 h-16 bg-rose-200 rounded-full flex items-center justify-center text-3xl">➕➖</div>
+                            <div>
+                                <h3 class="font-bold text-xl text-rose-800">Números Enteros (ℤ)</h3>
+                                <p class="text-sm mt-2">Naturales, sus negativos y el cero: ..., -1, 0, 1,...</p>
+                            </div>
+                        </div>
+                        <div class="interactive-card bg-teal-50 p-6 rounded-xl border border-teal-200 cursor-pointer flex items-center space-x-4" onclick="showConceptDetail('racionales')">
+                            <div class="w-16 h-16 bg-teal-200 rounded-full flex items-center justify-center text-3xl">🍕</div>
+                            <div>
+                                <h3 class="font-bold text-xl text-teal-800">Números Racionales (ℚ)</h3>
+                                <p class="text-sm mt-2">Se pueden escribir como fracción: 1/2, 0.75, -3.</p>
+                            </div>
+                        </div>
+                        <div class="interactive-card bg-purple-50 p-6 rounded-xl border border-purple-200 cursor-pointer flex items-center space-x-4" onclick="showConceptDetail('irracionales')">
+                            <div class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center text-3xl">♾️</div>
+                            <div>
+                                <h3 class="font-bold text-xl text-purple-800">Números Irracionales (𝕀)</h3>
+                                <p class="text-sm mt-2">No se pueden escribir como fracción: π, √2.</p>
+                            </div>
+                        </div>
+                        <div class="interactive-card bg-orange-50 p-6 rounded-xl border border-orange-200 cursor-pointer flex items-center space-x-4" onclick="showConceptDetail('reales')">
+                            <div class="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center text-3xl">🌎</div>
+                            <div>
+                                <h3 class="font-bold text-xl text-orange-800">Números Reales (ℝ)</h3>
+                                <p class="text-sm mt-2">Todos los números racionales e irracionales.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="concept-detail" class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200" style="display:none;">
+                    </div>
+                </div>
+            </section>
+
+            <section id="actividades" class="content-section">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold text-center text-amber-600 mb-6">¡Manos a la Obra!</h2>
+                    <p class="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                        La mejor forma de aprender matemáticas es practicando. Aquí encontrarás juegos y desafíos interactivos para poner a prueba tus conocimientos sobre los diferentes tipos de números. Cada actividad está diseñada para ser divertida y ayudarte a afianzar lo que has aprendido.
+                    </p>
+                    <div class="space-y-8">
+                        <!-- Actividad Números Naturales -->
+                        <div class="p-6 rounded-lg border border-sky-200 bg-sky-50">
+                            <div class="flex items-center mb-4 space-x-4">
+                                <div class="w-16 h-16 bg-sky-200 rounded-full flex items-center justify-center text-3xl">🍎</div>
+                                <h3 class="text-2xl font-bold text-sky-800">Contador de Números Naturales</h3>
+                            </div>
+                            <p class="mb-4 text-sky-700">Introduce un número para saber si es un número natural.</p>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" id="naturalInput" class="w-full md:w-1/2 p-2 border border-sky-300 rounded-md focus:ring-sky-500 focus:border-sky-500" placeholder="Introduce un número...">
+                                <button onclick="verificarNatural()" class="px-6 py-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 transition">Verificar</button>
+                            </div>
+                            <p id="naturalResultado" class="mt-4 font-semibold text-lg"></p>
+                        </div>
+
+                        <!-- Actividad Números Enteros -->
+                        <div class="p-6 rounded-lg border border-rose-200 bg-rose-50">
+                            <div class="flex items-center mb-4 space-x-4">
+                                <div class="w-16 h-16 bg-rose-200 rounded-full flex items-center justify-center text-3xl">🌡️</div>
+                                <h3 class="text-2xl font-bold text-rose-800">Clasificador de Enteros</h3>
+                            </div>
+                            <p class="mb-4 text-rose-700">Escribe cualquier número y descubre si es un número entero.</p>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" id="enteroInput" class="w-full md:w-1/2 p-2 border border-rose-300 rounded-md focus:ring-rose-500 focus:border-rose-500" placeholder="Introduce un número...">
+                                <button onclick="verificarEntero()" class="px-6 py-2 bg-rose-500 text-white rounded-md hover:bg-rose-600 transition">Verificar</button>
+                            </div>
+                            <p id="enteroResultado" class="mt-4 font-semibold text-lg"></p>
+                        </div>
+                        
+                        <!-- Actividad Números Racionales -->
+                        <div class="p-6 rounded-lg border border-teal-200 bg-teal-50">
+                            <div class="flex items-center mb-4 space-x-4">
+                                <div class="w-16 h-16 bg-teal-200 rounded-full flex items-center justify-center text-3xl">🍰</div>
+                                <h3 class="text-2xl font-bold text-teal-800">Fracciones a Decimales (Racionales)</h3>
+                            </div>
+                            <p class="mb-4 text-teal-700">Introduce una fracción para ver su forma decimal y confirmar que es un número racional.</p>
+                            <div class="flex items-center space-x-4">
+                                <input type="number" id="numRacional" class="w-24 p-2 border border-teal-300 rounded-md focus:ring-teal-500 focus:border-teal-500" placeholder="Numerador">
+                                <span class="text-2xl font-bold text-teal-800">/</span>
+                                <input type="number" id="denRacional" class="w-24 p-2 border border-teal-300 rounded-md focus:ring-teal-500 focus:border-teal-500" placeholder="Denominador">
+                                <button onclick="convertirRacional()" class="px-6 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition">Convertir</button>
+                            </div>
+                            <p id="racionalResultado" class="mt-4 font-semibold text-lg"></p>
+                        </div>
+
+                        <!-- Actividad Números Irracionales -->
+                        <div class="p-6 rounded-lg border border-purple-200 bg-purple-50">
+                            <div class="flex items-center mb-4 space-x-4">
+                                <div class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center text-3xl">❓</div>
+                                <h3 class="text-2xl font-bold text-purple-800 mb-4">Identifica al Irracional</h3>
+                            </div>
+                            <p class="mb-4 text-purple-700">¿Cuál de estos números es irracional?</p>
+                            <div class="flex flex-wrap gap-4">
+                                <button class="px-6 py-2 bg-purple-300 text-purple-900 rounded-md hover:bg-purple-400 transition" onclick="checkIrrational('3')">3</button>
+                                <button class="px-6 py-2 bg-purple-300 text-purple-900 rounded-md hover:bg-purple-400 transition" onclick="checkIrrational('0.75')">0.75</button>
+                                <button class="px-6 py-2 bg-purple-300 text-purple-900 rounded-md hover:bg-purple-400 transition" onclick="checkIrrational('pi')">π (Pi)</button>
+                                <button class="px-6 py-2 bg-purple-300 text-purple-900 rounded-md hover:bg-purple-400 transition" onclick="checkIrrational('-5')">-5</button>
+                            </div>
+                            <p id="irracionalResultado" class="mt-4 font-semibold text-lg"></p>
+                        </div>
+
+                        <!-- Actividad Números Reales -->
+                        <div class="p-6 rounded-lg border border-orange-200 bg-orange-50">
+                            <div class="flex items-center mb-4 space-x-4">
+                                <div class="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center text-3xl">💡</div>
+                                <h3 class="text-2xl font-bold text-orange-800 mb-4">El Gran Conjunto Real</h3>
+                            </div>
+                            <p class="mb-4 text-orange-700">Escribe cualquier número. ¡Todos los números que conocemos son números reales!</p>
+                            <div class="flex items-center space-x-4">
+                                <input type="text" id="realInput" class="w-full md:w-1/2 p-2 border border-orange-300 rounded-md focus:ring-orange-500 focus:border-orange-500" placeholder="Introduce cualquier número...">
+                                <button onclick="verificarReal()" class="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition">Verificar</button>
+                            </div>
+                            <p id="realResultado" class="mt-4 font-semibold text-lg"></p>
+                        </div>
+
+                        <!-- Nuevo: Generador de Ejemplos con IA -->
+                        <div class="p-6 rounded-lg border border-amber-300 bg-amber-100">
+                            <div class="flex items-center mb-4 space-x-4">
+                                <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center text-3xl">✨</div>
+                                <h3 class="text-2xl font-bold text-amber-800">Generador de Ejemplos con IA</h3>
+                            </div>
+                            <p class="mb-4 text-amber-700">Escribe un tipo de número (Natural, Entero, Racional, Irracional, Real) y la IA te dará un ejemplo o problema.</p>
+                            <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                                <input type="text" id="llmInput" class="w-full md:w-1/2 p-2 border border-amber-400 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 'Natural', 'Racional', 'Real'">
+                                <button onclick="generateLlmExample()" class="px-6 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition w-full md:w-auto">Generar Ejemplo ✨</button>
+                            </div>
+                            <p id="llmLoading" class="mt-4 text-amber-800 font-semibold" style="display:none;">Cargando ejemplo...</p>
+                            <p id="llmResult" class="mt-4 font-semibold text-lg text-amber-900"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="evaluacion" class="content-section">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold text-center text-amber-600 mb-6">¡Pon a Prueba tus Conocimientos!</h2>
+                    <p class="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                        Responde las siguientes preguntas para ver cuánto has aprendido sobre la clasificación de los números. ¡Cada respuesta correcta te acerca a ser un experto!
+                    </p>
+
+                    <div id="quizContainer" class="space-y-6">
+                        <div id="questionDisplay" class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <p id="quizQuestion" class="text-xl font-semibold text-gray-800 mb-4"></p>
+                            <div id="quizOptions" class="flex flex-col space-y-2">
+                                <!-- Opciones de respuesta se cargarán aquí -->
+                            </div>
+                            <p id="quizFeedback" class="mt-4 font-semibold text-lg"></p>
+                        </div>
+                        <div class="flex justify-between items-center mt-6">
+                            <button id="nextQuestionBtn" onclick="nextQuestion()" class="px-6 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition">Siguiente Pregunta</button>
+                            <p id="quizScore" class="text-xl font-bold text-amber-700">Puntuación: 0 / 0</p>
+                        </div>
+                        <div class="text-center mt-8">
+                            <button id="resetQuizBtn" onclick="resetQuiz()" class="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition" style="display:none;">Reiniciar Cuestionario</button>
+                        </div>
+                    </div>
+
+                    <h2 class="text-3xl font-bold text-center text-amber-600 mt-12 mb-6">Resumen de Comprensión</h2>
+                    <p class="text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                        Esta gráfica te muestra un resumen general de tu nivel de comprensión en las diferentes áreas de la clasificación numérica.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="evaluacionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.content-section');
+        const navButtons = document.querySelectorAll('.nav-button');
+        const conceptDetailContainer = document.getElementById('concept-detail');
+
+        const conceptDetails = {
+            naturales: {
+                title: 'Números Naturales (ℕ)',
+                content: 'Son los números que usamos para contar y ordenar cosas: 1, 2, 3, 4, y así sucesivamente. Son todos los números enteros positivos. A veces el cero (0) también se incluye, dependiendo de cómo se defina.'
+            },
+            enteros: {
+                title: 'Números Enteros (ℤ)',
+                content: 'Incluyen a todos los números naturales, el cero (0), y los números negativos enteros. Por ejemplo: ..., -3, -2, -1, 0, 1, 2, 3, ... Son números completos, sin partes decimales ni fraccionarias.'
+            },
+            racionales: {
+                title: 'Números Racionales (ℚ)',
+                content: 'Son todos los números que pueden escribirse como una fracción $a/b$, donde "a" y "b" son números enteros y "b" no es cero. Esto incluye a los números naturales, los enteros, y los decimales que terminan o se repiten (como 0.5 o 0.333...). Ejemplo: 1/2, -3/4, 5, 0.25.'
+            },
+            irracionales: {
+                title: 'Números Irracionales (𝕀)',
+                content: 'Son números que no pueden escribirse como una fracción simple. Sus expresiones decimales son infinitas y no periódicas (no se repiten). Ejemplos famosos son el número Pi (π ≈ 3.14159...) y la raíz cuadrada de 2 (√2 ≈ 1.41421...).'
+            },
+            reales: {
+                title: 'Números Reales (ℝ)',
+                content: 'Este conjunto incluye a todos los números racionales e irracionales. Son todos los números que pueden representarse en una recta numérica, cubriendo todos los valores posibles, tanto positivos como negativos, enteros, fraccionarios o con decimales infinitos no repetitivos.'
+            }
+        };
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('onclick').includes(sectionId)) {
+                    button.classList.add('active');
+                }
+            });
+            // Reset quiz when navigating away from evaluation
+            if (sectionId !== 'evaluacion') {
+                resetQuiz();
+            } else {
+                // Initialize quiz when navigating to evaluation
+                if (currentQuestionIndex === 0 && quizScore === 0) {
+                    loadQuestion();
+                }
+            }
+        }
+        
+        function showConceptDetail(conceptKey) {
+            const detail = conceptDetails[conceptKey];
+            conceptDetailContainer.innerHTML = `<h4 class="text-2xl font-bold mb-2">${detail.title}</h4><p>${detail.content}</p>`;
+            conceptDetailContainer.style.display = 'block';
+        }
+
+        // Actividad Números Naturales
+        function verificarNatural() {
+            const input = document.getElementById('naturalInput');
+            const resultado = document.getElementById('naturalResultado');
+            const num = parseFloat(input.value);
+
+            if (isNaN(num)) {
+                resultado.textContent = 'Por favor, introduce un número válido.';
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+                return;
+            }
+
+            if (num > 0 && num % 1 === 0) {
+                resultado.textContent = `El número ${num} ES un número natural.`;
+                resultado.className = 'mt-4 font-semibold text-lg text-green-600';
+            } else {
+                resultado.textContent = `El número ${num} NO es un número natural.`;
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+            }
+        }
+
+        // Actividad Números Enteros
+        function verificarEntero() {
+            const input = document.getElementById('enteroInput');
+            const resultado = document.getElementById('enteroResultado');
+            const num = parseFloat(input.value);
+
+            if (isNaN(num)) {
+                resultado.textContent = 'Por favor, introduce un número válido.';
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+                return;
+            }
+
+            if (num % 1 === 0) {
+                resultado.textContent = `El número ${num} ES un número entero.`;
+                resultado.className = 'mt-4 font-semibold text-lg text-green-600';
+            } else {
+                resultado.textContent = `El número ${num} NO es un número entero.`;
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+            }
+        }
+
+        // Actividad Números Racionales
+        function convertirRacional() {
+            const numInput = document.getElementById('numRacional');
+            const denInput = document.getElementById('denRacional');
+            const resultado = document.getElementById('racionalResultado');
+            const num = parseFloat(numInput.value);
+            const den = parseFloat(denInput.value);
+
+            if (isNaN(num) || isNaN(den) || den === 0) {
+                resultado.textContent = 'Por favor, introduce un numerador y un denominador válidos (el denominador no puede ser cero).';
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+                return;
+            }
+
+            const decimal = num / den;
+            resultado.textContent = `La fracción ${num}/${den} es ${decimal}. ES un número racional.`;
+            resultado.className = 'mt-4 font-semibold text-lg text-teal-600';
+        }
+
+        // Actividad Números Irracionales
+        function checkIrrational(choice) {
+            const resultado = document.getElementById('irracionalResultado');
+            if (choice === 'pi') {
+                resultado.textContent = '¡Correcto! Pi (π) es un número irracional.';
+                resultado.className = 'mt-4 font-semibold text-lg text-green-600';
+            } else {
+                resultado.textContent = 'Incorrecto. Inténtalo de nuevo.';
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+            }
+        }
+
+        // Actividad Números Reales
+        function verificarReal() {
+            const input = document.getElementById('realInput');
+            const resultado = document.getElementById('realResultado');
+            const value = input.value.trim();
+
+            if (value === '') {
+                resultado.textContent = 'Por favor, introduce un número.';
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+                return;
+            }
+
+            // Simple check if it can be parsed as a number.
+            // For 4th grade, any number they encounter will be real.
+            if (!isNaN(parseFloat(value))) {
+                resultado.textContent = `¡El número "${value}" ES un número REAL! Todos los números que usamos son reales.`;
+                resultado.className = 'mt-4 font-semibold text-lg text-orange-600';
+            } else {
+                resultado.textContent = `"${value}" no parece ser un número válido.`;
+                resultado.className = 'mt-4 font-semibold text-lg text-red-500';
+            }
+        }
+        
+        // Quiz Logic
+        const quizQuestions = [
+            {
+                question: "¿Cuál de los siguientes es un número natural?",
+                options: ["-3", "0.5", "5", "π"],
+                answer: "5",
+                category: "Naturales"
+            },
+            {
+                question: "¿Es -7 un número entero?",
+                options: ["Sí", "No"],
+                answer: "Sí",
+                category: "Enteros"
+            },
+            {
+                question: "¿Puede el número 0.25 escribirse como una fracción?",
+                options: ["Sí", "No"],
+                answer: "Sí",
+                category: "Racionales"
+            },
+            {
+                question: "¿Es la raíz cuadrada de 2 (√2) un número irracional?",
+                options: ["Sí", "No"],
+                answer: "Sí",
+                category: "Irracionales"
+            },
+            {
+                question: "Todos los números que usamos, incluyendo decimales y fracciones, ¿son parte de qué conjunto numérico?",
+                options: ["Naturales", "Enteros", "Racionales", "Reales"],
+                answer: "Reales",
+                category: "Reales"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let answeredCurrentQuestion = false;
+
+        const quizQuestionEl = document.getElementById('quizQuestion');
+        const quizOptionsEl = document.getElementById('quizOptions');
+        const quizFeedbackEl = document.getElementById('quizFeedback');
+        const quizScoreEl = document.getElementById('quizScore');
+        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+        const resetQuizBtn = document.getElementById('resetQuizBtn');
+
+        function loadQuestion() {
+            if (currentQuestionIndex < quizQuestions.length) {
+                const q = quizQuestions[currentQuestionIndex];
+                quizQuestionEl.textContent = q.question;
+                quizOptionsEl.innerHTML = '';
+                q.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 transition';
+                    button.onclick = () => checkAnswer(option, q.answer);
+                    quizOptionsEl.appendChild(button);
+                });
+                quizFeedbackEl.textContent = '';
+                nextQuestionBtn.style.display = 'none'; // Hide next button until answered
+                resetQuizBtn.style.display = 'none'; // Hide reset button
+                answeredCurrentQuestion = false;
+                updateScoreDisplay();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function checkAnswer(selectedOption, correctAnswer) {
+            if (answeredCurrentQuestion) return; // Prevent multiple answers
+            answeredCurrentQuestion = true;
+
+            if (selectedOption === correctAnswer) {
+                quizScore++;
+                quizFeedbackEl.textContent = '¡Correcto!';
+                quizFeedbackEl.className = 'mt-4 font-semibold text-lg text-green-600';
+            } else {
+                quizFeedbackEl.textContent = `Incorrecto. La respuesta correcta era: ${correctAnswer}.`;
+                quizFeedbackEl.className = 'mt-4 font-semibold text-lg text-red-500';
+            }
+            updateScoreDisplay();
+            nextQuestionBtn.style.display = 'block'; // Show next button
+            disableOptions();
+        }
+
+        function disableOptions() {
+            Array.from(quizOptionsEl.children).forEach(button => {
+                button.disabled = true;
+                button.classList.remove('hover:bg-blue-200');
+                button.classList.add('opacity-50', 'cursor-not-allowed');
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function showQuizResults() {
+            quizQuestionEl.textContent = `¡Cuestionario Terminado!`;
+            quizOptionsEl.innerHTML = '';
+            quizFeedbackEl.textContent = `Tu puntuación final es: ${quizScore} de ${quizQuestions.length}.`;
+            quizFeedbackEl.className = 'mt-4 font-bold text-xl text-amber-700';
+            nextQuestionBtn.style.display = 'none';
+            resetQuizBtn.style.display = 'block'; // Show reset button
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            loadQuestion();
+        }
+
+        function updateScoreDisplay() {
+            quizScoreEl.textContent = `Puntuación: ${quizScore} / ${currentQuestionIndex}`;
+            if (currentQuestionIndex === 0) {
+                quizScoreEl.textContent = `Puntuación: 0 / ${quizQuestions.length}`;
+            } else if (currentQuestionIndex === quizQuestions.length) {
+                 quizScoreEl.textContent = `Puntuación final: ${quizScore} / ${quizQuestions.length}`;
+            }
+        }
+
+        // Gemini API Integration
+        async function generateLlmExample() {
+            const llmInput = document.getElementById('llmInput');
+            const llmLoading = document.getElementById('llmLoading');
+            const llmResult = document.getElementById('llmResult');
+            const numberType = llmInput.value.trim();
+
+            if (!numberType) {
+                llmResult.textContent = 'Por favor, introduce un tipo de número (Ej: Natural, Racional).';
+                llmResult.className = 'mt-4 font-semibold text-lg text-red-500';
+                return;
+            }
+
+            llmResult.textContent = '';
+            llmLoading.style.display = 'block';
+
+            try {
+                const prompt = `Genera un ejemplo de la vida real o un problema simple que involucre un ${numberType}. La respuesta debe ser concisa, adecuada para un niño de 4to grado y en español.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    llmResult.textContent = text;
+                    llmResult.className = 'mt-4 font-semibold text-lg text-amber-900';
+                } else {
+                    llmResult.textContent = 'No se pudo generar un ejemplo. Intenta de nuevo.';
+                    llmResult.className = 'mt-4 font-semibold text-lg text-red-500';
+                }
+            } catch (error) {
+                console.error('Error al llamar a la API de Gemini:', error);
+                llmResult.textContent = 'Ocurrió un error al generar el ejemplo. Por favor, inténtalo más tarde.';
+                llmResult.className = 'mt-4 font-semibold text-lg text-red-500';
+            } finally {
+                llmLoading.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxEval = document.getElementById('evaluacionChart').getContext('2d');
+            new Chart(ctxEval, {
+                type: 'radar',
+                data: {
+                    labels: ['Naturales', 'Enteros', 'Racionales', 'Irracionales', 'Reales', 'Aplicación de Conceptos'],
+                    datasets: [{
+                        label: 'Nivel de Comprensión',
+                        data: [85, 80, 75, 70, 90, 88], /* Ejemplo de datos, se pueden ajustar */
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(255, 193, 7, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(255, 193, 7, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#3D3D3D'
+                            },
+                            ticks: {
+                                backdropColor: 'rgba(255, 251, 248, 1)',
+                                color: '#777',
+                                stepSize: 25,
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.r !== null) {
+                                        label += context.parsed.r + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize quiz on page load if evaluation section is active
+            if (document.getElementById('evaluacion').classList.contains('active')) {
+                loadQuestion();
+            }
+        });
+
+    </script>
+</body>
+</html>
